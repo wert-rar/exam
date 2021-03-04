@@ -52,8 +52,8 @@ class CombSolver:
         if n % 2 == 0:
             return 0
         x = (n + 1) / 2
-        if x in range(self.start, n + 1):
-            return self.all_ways[int(x) - 1] + self.all_ways[int(x)]
+        if x in range(self.start, n):
+            return self.all_ways[int(x) - self.start]
 
     # ---------------------------------------
 
@@ -133,6 +133,8 @@ class CombSolverWithoutTr(CombSolver):
 
     def get_ways_from_pluses(self, n):
         ways = 0
+
+
         for p in self.pluses:
             if n - p >= self.start:
                 ways += self.all_ways[n - p - self.start]
@@ -176,13 +178,9 @@ class CombSolverTr(CombSolver):
     :not_tr - points out of trajectory
 
     """
-    def __init__(self, start: int, end: int, tr: [], not_tr: [], pluses=None, multipliers=None, powers=None):
 
-        if len(tr) == 0:
-            raise AttributeError('numbers in trajectory is empty. \nif you don\'t need them \nuse class '
-                                 'CombSolverWithoutTr ')
-
-        super().__init__(start, end, pluses, multipliers, powers)
+    def __init__(self, start: int, end: int, tr: [], not_tr: [], pluses=None, multipliers=None, powers=None, prev=False):
+        super().__init__(start, end, pluses, multipliers, powers, prev)
         self.not_tr = not_tr
         self.tr = tr
         self.now_tr = start
@@ -198,11 +196,11 @@ class CombSolverTr(CombSolver):
     def get_ways_from_dels(self, n):
         ways = 0
         for m in self.multipliers:
+
             #  number must be more than trajectory and don't be in not_trajectory
             if (n % m == 0) and \
-              (n // m >= self.now_tr) and \
-              (n // m not in self.not_tr):
-
+                    (n / m >= self.now_tr) and \
+                    (n // m not in self.not_tr):
                 ways += self.all_ways[n // m - self.start]
         return ways
 
@@ -212,8 +210,7 @@ class CombSolverTr(CombSolver):
             x = n ** (1 / m)
             #  number must be more than trajectory and don't be in not_trajectory
             if (x in range(self.now_tr, n + 1)) \
-               and (x not in self.not_tr):
-
+                    and (x not in self.not_tr):
                 ways += self.all_ways[int(x) - self.start]
 
         return ways
@@ -238,17 +235,20 @@ class CombSolverTr(CombSolver):
         for tr in self.not_tr:
             self.all_ways[tr - self.start] = 0
 
-        # start range always is (start, first trajectory)
-        self.do_one_tr(self.tr[0])
+        if len(self.tr) == 0:
+            self.fill_range(self.end)
+        else:
+            # start range always is (start, first trajectory)
+            self.do_one_tr(self.tr[0])
 
-        # main part
-        for tr in range(1, len(self.tr)):
-            self.do_one_tr(self.tr[tr])
+            # main part
+            for tr in range(1, len(self.tr)):
+                self.do_one_tr(self.tr[tr])
 
-        # last range always is (last trajectory; end)
-        self.fill_range(self.end)
+            # last range always is (last trajectory; end)
+            self.fill_range(self.end)
 
-        # print numbers of ways to last number
+            # print numbers of ways to last number
         print(f'Answer -  {self.all_ways[-1]} \n')
         # print table if user want
         if debug:
@@ -256,12 +256,24 @@ class CombSolverTr(CombSolver):
 
 
 def main():
-    print('Task Without Trajectory')
-    c = CombSolverWithoutTr(1, 10, [1,2], [])
-    c.get_comb_without_trajectory(True)
+    # print('Task Without Trajectory')
+    # # из 3 в 10 используя +1 +2, *2, сумма прведушего
+    # c = CombSolverWithoutTr(3, 10, [1,3], [])
+    # c = CombSolverWithoutTr(1, 55, [2], [3])
+    # c = CombSolverWithoutTr(1, 55, [1,3],)
+    # c.get_comb_without_trajectory(True)
     print()
     print('Task With Trajectory')
-    ct = CombSolverTr(1, 10, [5], [], [1, 2])
+
+    start = 3
+    end = 20
+    tr = [15]
+    not_tr = [10]
+    plus = [1,3]
+    p = []
+
+    ct = CombSolverTr(start, end, tr, not_tr, pluses=plus,multipliers= p)
+    # True - показывать таблицу
     ct.get_comb_with_trajectory(True)
 
 
