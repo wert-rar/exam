@@ -134,7 +134,6 @@ class CombSolverWithoutTr(CombSolver):
     def get_ways_from_pluses(self, n):
         ways = 0
 
-
         for p in self.pluses:
             if n - p >= self.start:
                 ways += self.all_ways[n - p - self.start]
@@ -179,7 +178,8 @@ class CombSolverTr(CombSolver):
 
     """
 
-    def __init__(self, start: int, end: int, tr: [], not_tr: [], pluses=None, multipliers=None, powers=None, prev=False):
+    def __init__(self, start: int, end: int, tr: [], not_tr: [], pluses=None, multipliers=None, powers=None,
+                 prev=False):
         super().__init__(start, end, pluses, multipliers, powers, prev)
         self.not_tr = not_tr
         self.tr = tr
@@ -258,22 +258,23 @@ class CombSolverTr(CombSolver):
 def main():
     # print('Task Without Trajectory')
     # # из 3 в 10 используя +1 +2, *2, сумма прведушего
-    # c = CombSolverWithoutTr(3, 10, [1,3], [])
+    c = CombSolverWithoutTr(3, 42, [1], [2], prev=False)
     # c = CombSolverWithoutTr(1, 55, [2], [3])
     # c = CombSolverWithoutTr(1, 55, [1,3],)
-    # c.get_comb_without_trajectory(True)
+    c.get_comb_without_trajectory(True)
     print()
     print('Task With Trajectory')
 
     start = 3
-    end = 20
-    tr = [15]
-    not_tr = [10]
-    plus = [1,3]
-    p = []
+    end = 42
 
-    ct = CombSolverTr(start, end, tr, not_tr, pluses=plus,multipliers= p)
-    # True - показывать таблицу
+    tr = []
+    not_tr = []
+    plus = [3]
+    p = [2]
+
+    ct = CombSolverTr(start, end, tr, not_tr, pluses=plus, multipliers=p)
+    # # True - показывать таблицу
     ct.get_comb_with_trajectory(True)
 
 

@@ -5,6 +5,13 @@ arrow = lambda A, B: int(not (A > B))
 # LTS -- LogicTableSolver
 
 class BaseLTS:
+    '''
+    Class with basic functions for LTS
+
+    create logic  table for <n> x
+    create title for <n> x
+    print table
+    '''
 
     def __init__(self, number_of_x):
         self.n = number_of_x
@@ -37,6 +44,7 @@ class BaseLTS:
             table.append(BaseLTS.create_column(i, len_))
         return table
 
+    # title for table
     @staticmethod
     def create_title(n):
         form = ''
@@ -45,6 +53,7 @@ class BaseLTS:
         form += 'F'
         return form
 
+    # print table
     @staticmethod
     def print_table(n, table):
         print(BaseLTS.create_title(n))
@@ -54,6 +63,7 @@ class BaseLTS:
             print(
                 form.format(*table_row))
 
+    # print table and answers or calculate answers automatically
     @staticmethod
     def print_log_table(n, table, fs):
 
@@ -70,6 +80,7 @@ class BaseLTS:
                 table_row = [t[i] for t in table]
                 print(form.format(*table_row, fs(*table_row)))
 
+    # base method for Child's classes
     def solve(self):
         table = self.create_var_table(self.n)
         print("gen table with all possible all_ways")
@@ -77,6 +88,9 @@ class BaseLTS:
 
 
 class OneFormulaLTS(BaseLTS):
+    '''
+    Solve log table for one formula
+    '''
     def __init__(self, number_of_x, formula):
         super().__init__(number_of_x)
         self.formula = formula
@@ -175,6 +189,7 @@ class LotFormulaLTS(BaseLTS):
 
 
 class FinderLTS(OneFormulaLTS):
+    '''Find '''
     def __init__(self, number_of_x, f, giving_table):
         super().__init__(number_of_x, f)
         self.giving_table = giving_table
@@ -234,16 +249,17 @@ def lot_lts_test():
     f2 = lambda x, y, z: (x and not y) or z
     f4 = lambda x, y, z: (not x or y) or not z
     f3 = lambda x, y, z: (x and y) and not z
-    more_formul = LotFormulaLTS(3, [f,f2,f3,f4], giving_table=table, pattern=[1, 0, 1])
-    more_formul.solve()
+    lot_formul = LotFormulaLTS(3, [f, f2, f3, f4], giving_table=table, pattern=[1, 0, 1])
+    lot_formul.solve()
 
 
 def finder_lts_test():
     # First with gen args
 
-    table = BaseLTS.create_var_table(2)
+    # table = BaseLTS.create_var_table(2)
     # finder = FinderLTS(2, arrow, table)
     # finder.solve()
+
     # Second with giving table
     table = [
         [None, None, 1],
@@ -251,15 +267,22 @@ def finder_lts_test():
         [0, None, 1],
         [1, 0, 0],
     ]
-    # finder = FinderLTS(2, arrow, table)
-    # finder.solve()
+    finder = FinderLTS(2, arrow, table)
+    finder.solve()
 
 
 def main():
-    # lts_test()
-    # formul_lts_test()
+    print('base test')
+    lts_test()
+    print()
+    print('one formul test')
+    formul_lts_test()
+    print()
+    print('lot test')
     lot_lts_test()
-    # finder_lts_test()
+    print()
+    print('finder test')
+    finder_lts_test()
 
 
 if __name__ == '__main__':
